@@ -89,6 +89,30 @@ footer {
     margin-top: 20px;
 }
 
+.login-form form .form-group input[type='text'] {
+    font-size:17.8px;
+    padding:15px 10px;
+    border:1px solid #ebb217;
+    margin-bottom:20px;
+    width:20%;
+}
+
+.login-form form .form-group input[type='password'] {
+    font-size:17.8px;
+    padding:15px 10px;
+    border:1px solid #ebb217;
+    margin-bottom:20px;
+    width:20%;
+}
+
+.login-form form .login-btn {
+    font-size:17.8px;
+    padding:15px 10px;
+    border:1px solid #ebb217;
+    margin-bottom:20px;
+    width:21.4%;
+}
+
 
 
 
