@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD']= 'POST' && isset($_POST['login'])) {
 <main class='container-fluid'>
     <div class="login-form">
         <h1>Вход в систему</h1>
-    <form action='#' method='post'>
+    <form action='index.php' method='post'>
     <div class='form-group'>
   <input type='text' name='username' placeholder='Имя пользователя' required/>
     </div>
