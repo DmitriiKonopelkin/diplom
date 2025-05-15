@@ -2,6 +2,17 @@
 
 require "../config/db.php";
 
+if($_SERVER['REQUEST_METHOD']== 'POST' && isset($_POST['product_id'])) {
+  $product_id= intval($_POST['product_id']);
+
+  $sql= ("DELETE FROM products WHERE id = ?");
+
+  $stmt= $conn->prepare($sql);
+  $stmt->bind_param("i", $product_id);
+  $stmt->execute();
+  $stmt->close();
+}
+
 ?>
 
 
@@ -16,7 +27,7 @@ require "../config/db.php";
 <body>
     <?php include "../includes/header.php"; ?>
     <main class='container-fluid'>
-    
+       
     </main>
     <?php include "../includes/footer.php"; ?>
 </body>
