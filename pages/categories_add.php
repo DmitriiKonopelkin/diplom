@@ -1,3 +1,17 @@
+<?php
+
+require "../config/db.php";
+
+if($_SERVER['REQUEST_METHOD']== 'POST') {
+    $name= $_POST['name'];
+    $description= $_POST['description'];
+
+    $sql= ("INSERT INTO categories('id', 'name', 'description') VALUES('$id', '$name', '$description')");
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
