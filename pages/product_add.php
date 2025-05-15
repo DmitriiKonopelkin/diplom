@@ -1,6 +1,13 @@
 <?php
 require "../config/db.php";
 
+$categories=[];
+$categories_result=$conn->query("SELECT id, name FROM categories");
+if($categories_result) {
+    while($row= $categories_result->fetch_assoc()) {
+        $categories[$row['id']]= $row['name'];
+    }
+}
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Получаем и проверяем данные
     $name = $_POST['name'] ?? '';
@@ -10,7 +17,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $color = $_POST['color'] ?? null;
     $perishable = isset($_POST['perishable']) ? 1 : 0;
     $fragile = isset($_POST['fragile']) ? 1 : 0;
-    $categories_id = intval($_POST['categories'] ?? 1);
+    $categories_id = intval($_POST['categories_id'] ?? 1);
 
 
     $sql = "INSERT INTO products (name, description, weight, dimensions, color, perishable, fragile, categories_id) 
@@ -127,7 +134,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         <label>Является ли товар хрупким</label>
      </div>
      <div>
-        <input type='number' name='categories' value='1' min="1" required/>
+        <select name='categories_id' required>
+            <option value="">-- Выберите категорию --</option>
+            <?php foreach ($categories as $id => $name): ?>
+                <option value="<?= htmlspecialchars($id) ?>"><?= htmlspecialchars($name) ?></option>
+            <?php endforeach; ?>
+        </select>
      </div>
     <div>
         <input type='submit' value='Добавить товар'/>
