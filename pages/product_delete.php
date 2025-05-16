@@ -27,7 +27,18 @@ if($_SERVER['REQUEST_METHOD']== 'POST' && isset($_POST['product_id'])) {
 <body>
     <?php include "../includes/header.php"; ?>
     <main class='container-fluid'>
-       
+       <table>
+        <tr>
+        <th>Id</th>
+        <th>Название</th>
+        <th>Удалить</th>
+        </tr>
+        <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+       </table>
     </main>
     <?php include "../includes/footer.php"; ?>
 </body>
