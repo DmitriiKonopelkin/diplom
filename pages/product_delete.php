@@ -13,13 +13,13 @@ if($_SERVER['REQUEST_METHOD']== 'POST' && isset($_POST['product_id'])) {
   $stmt->close();
 }
 
-$product=[];
+$products=[];
 
 $sql= ("SELECT id, name FROM products");
 
 $result= $conn->query($sql);
 
-while($row= $result_fetch_assoc) {
+while($row= $result->fetch_assoc()) {
   $products[]= $row;
 }
 
@@ -47,12 +47,12 @@ $conn->close();
         </tr>
         <?php
 
-        foreach($products as $product);
+        foreach($products as $product):
         ?>
         <tr>
-        <td><?php  echo htmlspecialchars($products['id']); ?></td>
-        <td><?php  echo htmlspecialchars($products['name']); ?></td>
-        <td><form method='post'>
+        <td><?php  echo htmlspecialchars($product['id']); ?></td>
+        <td><?php  echo htmlspecialchars($product['name']); ?></td>
+        <td><form method='post' onsubmit='return confirm("Вы уверены, что хотите удалить этот товар?");'>
             <div>
               <input type='hidden' name='product_id' value="<?php echo $product['id']; ?>">            
             </div>
