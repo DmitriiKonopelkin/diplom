@@ -13,6 +13,18 @@ if($_SERVER['REQUEST_METHOD']== 'POST' && isset($_POST['product_id'])) {
   $stmt->close();
 }
 
+$product=[];
+
+$sql= ("SELECT id, name FROM products");
+
+$result= $conn->query($sql);
+
+while($row= $result_fetch_assoc) {
+  $products[]= $row;
+}
+
+$conn->close();
+
 ?>
 
 
@@ -33,11 +45,23 @@ if($_SERVER['REQUEST_METHOD']== 'POST' && isset($_POST['product_id'])) {
         <th>Название</th>
         <th>Удалить</th>
         </tr>
+        <?php
+
+        foreach($products as $product);
+        ?>
         <tr>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><?php  echo htmlspecialchars($products['id']); ?></td>
+        <td><?php  echo htmlspecialchars($products['name']); ?></td>
+        <td><form method='post'>
+            <div>
+              <input type='hidden' name='product_id' value="<?php echo $product['id']; ?>">            
+            </div>
+            <div>
+              <button type='submit'>Удалить</button>
+            </div>
+        </form></td>
         </tr>
+        <?php endforeach; ?>
        </table>
     </main>
     <?php include "../includes/footer.php"; ?>
