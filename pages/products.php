@@ -4,7 +4,38 @@ ini_set('display_errors', 1);
 
 require "../config/db.php";
 
+$searchName = '';
+$minPrice = null;
+$maxPrice = null;
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $searchName = $_POST['search'];
+    $minPrice = !empty($_POST['min_price']) ? floatval($_POST['min_price']) : null;
+    $maxPrice = !empty($_POST['max_price']) ? floatval($_POST['max_price']) : null;
+}
+
 try {
+
+    $sqlConditions = array();
+    $params = array();
+
+    if (!empty($searchName)) {
+        $sqlConditions[] = "products.name LIKE ?";
+        $params[] = "%{$searchName}%";
+    }
+
+    if ($minPrice !== null && is_numeric($minPrice)) {
+        $sqlConditions[] = "prices.price >= ?";
+        $params[] = $minPrice;
+    }
+
+    if ($maxPrice !== null && is_numeric($maxPrice)) {
+        $sqlConditions[] = "prices.price <= ?";
+        $params[] = $maxPrice;
+    }
+
+    $whereClause = count($sqlConditions) > 0 ? 'WHERE ' . implode(' AND ', $sqlConditions) : '';
+
     $query = "
         SELECT 
             products.*, 
@@ -15,25 +46,33 @@ try {
         LEFT JOIN prices ON products.id = prices.product_id 
         LEFT JOIN stock ON products.id = stock.product_id
         LEFT JOIN categories ON products.categories_id = categories.id
+        {$whereClause}
         ORDER BY products.id
     ";
-    
-    $result = $conn->query($query);
-    
+
+    if (count($params) > 0) {
+        $stmt = $conn->prepare($query);
+        $stmt->execute($params);
+        $result = $stmt->get_result();
+    } else {
+        $result = $conn->query($query);
+    }
+
     if (!$result) {
         throw new Exception("Ошибка выполнения запроса: " . $conn->error);
     }
-    
+
     $products = [];
     while ($row = $result->fetch_assoc()) {
         $products[] = $row;
     }
-    
+
     $conn->close();
 } catch (Exception $e) {
     die("Произошла ошибка: " . $e->getMessage());
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -48,6 +87,21 @@ try {
 <main class='container-fluid'>
     <h1>Управление остатками товаров</h1>
     
+    <div class="filter-form">
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <label for="search">Искать товар:</label>
+            <input type="text" id="search" name="search" value="<?php echo htmlspecialchars($searchName); ?>"/>
+            
+            <label for="min_price">Минимальная цена:</label>
+            <input type="number" step="any" min="0" id="min_price" name="min_price" placeholder="От..." value="<?php echo htmlspecialchars($minPrice ?: ''); ?>"/>
+            
+            <label for="max_price">Максимальная цена:</label>
+            <input type="number" step="any" min="0" id="max_price" name="max_price" placeholder="До..." value="<?php echo htmlspecialchars($maxPrice ?: ''); ?>"/>
+            
+            <button type="submit">Применить фильтры</button>
+        </form>
+    </div>
+
     <?php if (empty($products)): ?>
         <div class="error-message">
             Нет данных о товарах или произошла ошибка при загрузке.
