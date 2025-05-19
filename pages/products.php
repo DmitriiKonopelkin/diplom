@@ -4,18 +4,19 @@ ini_set('display_errors', 1);
 
 require "../config/db.php";
 
-$searchName = '';
-$minPrice = null;
-$maxPrice = null;
+$searchName = ''; 
+$minPrice   = null; 
+$maxPrice   = null;
+$categoryId = null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $searchName = $_POST['search'];
-    $minPrice = !empty($_POST['min_price']) ? floatval($_POST['min_price']) : null;
-    $maxPrice = !empty($_POST['max_price']) ? floatval($_POST['max_price']) : null;
+    $searchName = trim($_POST['search']);
+    $minPrice   = !empty($_POST['min_price']) ? floatval($_POST['min_price']) : null;
+    $maxPrice   = !empty($_POST['max_price']) ? floatval($_POST['max_price']) : null;
+    $categoryId = !empty($_POST['category_filter']) ? intval($_POST['category_filter']) : null;
 }
 
 try {
-
     $sqlConditions = array();
     $params = array();
 
@@ -34,11 +35,16 @@ try {
         $params[] = $maxPrice;
     }
 
+    if ($categoryId !== null) {
+        $sqlConditions[] = "products.categories_id = ?";
+        $params[] = $categoryId;
+    }
+
     $whereClause = count($sqlConditions) > 0 ? 'WHERE ' . implode(' AND ', $sqlConditions) : '';
 
     $query = "
         SELECT 
-            products.*, 
+            products.*,
             prices.price AS base_price,
             categories.name AS category_name,
             stock.quantity AS stock_quantity
@@ -100,6 +106,7 @@ try {
             
             <button type="submit">Применить фильтры</button>
         </form>
+
     </div>
 
     <?php if (empty($products)): ?>
