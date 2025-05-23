@@ -2,7 +2,16 @@
 
 require "../config/db.php";
 
+$sql= ("SELECT * FROM categories");
 
+$result= $conn->query($sql);
+
+ $categories = [];
+    while ($row = $result->fetch_assoc()) {
+        $categories[] = $row;
+    }
+
+    $conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -22,17 +31,18 @@ require "../config/db.php";
         <th>Артикул</th>
         <th>Название</th>
         <th>Описание</th>
+        <th>Действия</th>
     </tr>
-    <tr>
-        <td>1</td>
-        <td>Горный велосипед</td>
-        <td>Горный велосипед</td>
-    </tr>
-    <tr>
-        <td>2</td>
-        <td>Городской велосипед</td>
-        <td>Городской велосипед</td>
-    </tr>
+     <?php foreach ($categories as $category): ?>
+            <tr>
+                <td><?= htmlspecialchars($category['id'] ?? '') ?></td>
+                <td><?= htmlspecialchars($category['name'] ?? '') ?></td>
+                <td><?= htmlspecialchars($product['description'] ?? '—') ?></td>
+                <td class="action-col">
+                    <a href="category_edit.php?id=<?= $category['id'] ?>" class="edit-btn">Редактировать</a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
  </table>
 </main>
 <?php include "../includes/footer.php"; ?>
