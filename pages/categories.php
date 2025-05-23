@@ -39,7 +39,7 @@ $result= $conn->query($sql);
                 <td><?= htmlspecialchars($category['name'] ?? '') ?></td>
                 <td><?= htmlspecialchars($product['description'] ?? '—') ?></td>
                 <td class="action-col">
-                    <a href="category_edit.php?id=<?= $category['id'] ?>" class="edit-btn">Редактировать</a>
+                    <a href="categories_edit.php?id=<?= $category['id'] ?>" class="edit-btn">Редактировать</a>
                 </td>
             </tr>
             <?php endforeach; ?>
