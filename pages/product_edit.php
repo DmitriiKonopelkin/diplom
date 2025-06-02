@@ -1,4 +1,3 @@
-
 <?php
 require "../config/db.php";
 
@@ -10,7 +9,6 @@ if ($categories_result) {
     }
 }
 
-// Получаем данные товара для редактирования
 $product = null;
 if (isset($_GET['id'])) {
     $product_id = intval($_GET['id']);
@@ -22,7 +20,6 @@ if (isset($_GET['id'])) {
     $stmt->close();
 }
 
-// Обработка формы обновления
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     $product_id = intval($_POST['id']);
     $name = $_POST['name'] ?? '';
@@ -54,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
 
     if ($stmt->execute()) {
         echo "<p style='color:green'>Товар успешно обновлен!</p>";
-        // Обновляем данные товара для отображения
         $product = [
             'id' => $product_id,
             'name' => $name,
@@ -83,114 +79,64 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($product) ? 'Редактирование товара' : 'Товар не найден' ?></title>
     <link rel='stylesheet' href='../css/style.css'/>
-    <style>
-        .product_edit input[type='text'],
-        .product_edit input[type='number'] {
-            font-size:17.8px;
-            margin-bottom:20px;
-            padding:15px 10px;
-            border:1px solid #ebb217;
-            width:20%;
-        }
-
-        .product_edit textarea {
-            font-size:17.8px;
-            margin-bottom:20px;
-            padding:15px 10px;
-            border:1px solid #ebb217;
-            width:20%;
-            height: 100px;
-        }
-
-        .product_edit input[type='checkbox'] {
-            width: auto;
-            margin-right: 10px;
-        }
-
-        .product_edit select {
-            font-size:17.8px;
-            margin-bottom:20px;
-            padding:15px 10px;
-            border:1px solid #ebb217;
-            width:20%;
-        }
-
-.product_edit input[type='submit'] {
-            font-size:17.8px;
-            margin-bottom:20px;
-            padding:15px 10px;
-            border:1px solid #ebb217;
-            width:20%;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-        
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #0066cc;
-            text-decoration: none;
-        }
-    </style>
 </head>
 <body>
 <?php include "../includes/header.php"; ?>
 <main class='container-fluid'>
     <?php if (isset($product)): ?>
         <a href="product_list.php" class="back-link">← Вернуться к списку товаров</a>
-        <form class='product_edit' action='product_edit.php' method='post'>
-            <input type='hidden' name='id' value='<?= htmlspecialchars($product['id']) ?>'>
-            
+        <form class="product_add" action="product_edit.php" method="post">
+            <input type="hidden" name="id" value="<?= htmlspecialchars($product['id']) ?>">
+
             <div>
-                <input type='text' name='name' placeholder='Название товара' 
-                       value='<?= htmlspecialchars($product['name'] ?? '') ?>' required/>
+                <input type="text" name="name" placeholder="Название товара" 
+                       value="<?= htmlspecialchars($product['name'] ?? '') ?>" required />
             </div>
+
             <div>
-               <textarea name='description' placeholder='Описание товара' required><?= 
-                   htmlspecialchars($product['description'] ?? '') ?></textarea>
+                <textarea name="description" placeholder="Описание товара" required><?= htmlspecialchars($product['description'] ?? '') ?></textarea>
             </div>
+
             <div>
-                <input type='number' name='weight' placeholder='Вес товара' step="0.01"
-                       value='<?= htmlspecialchars($product['weight'] ?? '') ?>'/>
+                <input type="number" name="weight" placeholder="Вес товара" step="0.01"
+                       value="<?= htmlspecialchars($product['weight'] ?? '') ?>" />
             </div>
+
             <div>
-                <input type='text' name='dimensions' placeholder='Размер (например, 10x20x30)'
-                       value='<?= htmlspecialchars($product['dimensions'] ?? '') ?>'/>
+                <input type="text" name="dimensions" placeholder="Размер (например, 10x20x30)"
+                       value="<?= htmlspecialchars($product['dimensions'] ?? '') ?>" />
             </div>
+
             <div>
-                <input type='text' name='color' placeholder='Цвет'
-                       value='<?= htmlspecialchars($product['color'] ?? '') ?>'/>
+                <input type="text" name="color" placeholder="Цвет"
+                       value="<?= htmlspecialchars($product['color'] ?? '') ?>" />
             </div>
+
             <div class="checkbox-label">
-                <input type='checkbox' name='perishable' value="1" 
-                       <?= (isset($product['perishable']) && $product['perishable']) ? 'checked' : '' ?>/>
+                <input type="checkbox" name="perishable" value="1" 
+                       <?= (isset($product['perishable']) && $product['perishable']) ? 'checked' : '' ?> />
                 <label>Является ли товар скоропортящимся</label>
             </div>
-             <div class="checkbox-label">
-                <input type='checkbox' name='fragile' value="1"
-                       <?= (isset($product['fragile']) && $product['fragile']) ? 'checked' : '' ?>/>
+
+            <div class="checkbox-label">
+                <input type="checkbox" name="fragile" value="1"
+                       <?= (isset($product['fragile']) && $product['fragile']) ? 'checked' : '' ?> />
                 <label>Является ли товар хрупким</label>
-             </div>
-             <div>
-                <select name='categories_id' required>
+            </div>
+
+            <div>
+                <select name="categories_id" required>
                     <option value="">-- Выберите категорию --</option>
                     <?php foreach ($categories as $id => $name): ?>
-                        <option value="<?= htmlspecialchars($id) ?>" 
-                            <?= (isset($product['categories_id']) && $product['categories_id'] == $id) ? 'selected' : '' ?>>
+                        <option value="<?= htmlspecialchars($id) ?>" <?= (isset($product['categories_id']) && $product['categories_id'] == $id) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($name) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
-             </div>
+            </div>
+
             <div>
-                <input type='submit' value='Сохранить изменения'/>
+                <input type="submit" value="Сохранить изменения" class="btn btn-green" />
             </div>
         </form>
     <?php else: ?>

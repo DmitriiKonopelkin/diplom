@@ -1,7 +1,6 @@
 <?php
 require "../config/db.php";
 
-// Получаем данные товара для редактирования
 $category = null;
 if (isset($_GET['id'])) {
     $category_id = intval($_GET['id']);
@@ -13,7 +12,6 @@ if (isset($_GET['id'])) {
     $stmt->close();
 }
 
-// Обработка формы обновления
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     $category_id = intval($_POST['id']);
     $name = $_POST['name'] ?? '';
@@ -34,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
 
     if ($stmt->execute()) {
         echo "<p style='color:green'>Категория успешно обновлена!</p>";
-        // Обновляем данные товара для отображения
         $category = [
             'id' => $product_id,
             'name' => $name,

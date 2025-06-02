@@ -20,19 +20,6 @@ VALUES('$id', '$supplier_id', '$product_id', '$quantity', '$price_rer_unit')");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Заказы поставщика</title>
     <link rel='stylesheet' href='../css/style.css'/>
-    <style>
-        .supply_add input[type='number'] {
-            font-size:17.8px;
-            margin-bottom:20px;
-        }
-
-        .supply_add input[type='submit'] {
-            font-size:17.8px;
-            padding:15px 10px;
-            border:1px solid #ebb217;
-            margin-top:20px;
-        }
-    </style>
 </head>
 <body>
 <?php  include "../includes/header.php"; ?>
